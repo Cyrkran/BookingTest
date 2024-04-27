@@ -1,0 +1,17 @@
+[
+    {"id": "1", "location": "Sydney, Australia", "type": "Entire apartment", "price": 120},
+    {"id": "2", "location": "New York, USA", "type": "Private room", "price": 70},
+    {"id": "3", "location": "Paris, France", "type": "Entire house", "price": 200},
+    {"id": "4", "location": "Tokyo, Japan", "type": "Shared room", "price": 50},
+    {"id": "5", "location": "London, UK", "type": "Entire loft", "price": 150},
+    {"id": "6", "location": "Berlin, Germany", "type": "Private room", "price": 60},
+    {"id": "7", "location": "Rome, Italy", "type": "Entire villa", "price": 300},
+    {"id": "8", "location": "Cape Town, South Africa", "type": "Entire cottage", "price": 90},
+    {"id": "9", "location": "Beijing, China", "type": "Shared room", "price": 40},
+    {"id": "10", "location": "Rio de Janeiro, Brazil", "type": "Private room", "price": 80},
+    {"id": "11", "location": "Toronto, Canada", "type": "Entire apartment", "price": 110},
+    {"id": "12", "location": "Istanbul, Turkey", "type": "Entire house", "price": 130},
+    {"id": "13", "location": "Mumbai, India", "type": "Private room", "price": 55},
+    {"id": "14", "location": "Auckland, New Zealand", "type": "Entire bungalow", "price": 100},
+    {"id": "15", "location": "Moscow, Russia", "type": "Shared room", "price": 45}
+]
