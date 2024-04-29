@@ -1,0 +1,16 @@
+.HomeWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: '100%';
+    margin: 0px auto;
+    justify-content: space-between;
+}
+
+.bookingDetails {
+    max-width: 968px;
+    width: 100%;
+}
+
+.listings {
+    max-width: 378px;
+}
