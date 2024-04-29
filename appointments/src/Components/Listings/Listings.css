@@ -1,0 +1,9 @@
+.listings {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: fit-content;
+    gap: 5px;
+    overflow-y: auto;
+    height: 100vh;
+}

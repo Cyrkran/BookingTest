@@ -1,0 +1,48 @@
+.bookingsWrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.image {
+    background-position: center;
+    object-fit: cover;
+    width: 100%;
+    height: 350px;
+    background-size: cover;
+}
+
+.bookingsInfo {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+form {
+    width: 100%;
+}
+
+.form {
+    width: 95%;
+    padding: 30px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.form > button {
+    margin-bottom: 10px;
+}
+
+.myBookings {
+    width: '-webkit-fill-available';
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.fullWidth {
+    width: 100%;
+}
