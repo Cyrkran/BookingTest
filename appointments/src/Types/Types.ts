@@ -11,6 +11,7 @@ type BookingRequest = {
     startDate: Date,
     endDate: Date,
     price: number,
+    name: string
 }
 
 type BookingInfo = {
@@ -19,4 +20,5 @@ type BookingInfo = {
     startDate: Date,
     endDate: Date,
     price: number,
+    name: string
 }

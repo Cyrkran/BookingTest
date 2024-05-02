@@ -5,17 +5,17 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-interface Appointment {
+interface Booking {
     id: string;
-    location: string;
-    beginningDate: Date;
-    endingDate: Date;
+    locationId: string;
+    startDate: Date;
+    endDate: Date;
     price: number;
-    address: string;
 }
 
 interface Location {
@@ -23,27 +23,44 @@ interface Location {
     location: string;
     type: string;
     price: number;
+    image: string;
 }
 
 let locations: Location[] = JSON.parse(fs.readFileSync(path.join(__dirname, 'locations.json'), 'utf-8'));
-let appointments: Array<Appointment> = [];
+let bookings: Array<Booking> = [];
 
 const app = express();
 app.use(express.json());
+
+var corsOptions = {
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200 
+  }
+  
+app.use(cors(corsOptions));
 
 const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Appointment API',
+            title: 'Booking API',
             version: '1.0.0',
-            description: 'A simple Express Appointment API',
+            description: 'A simple Express Booking API',
         },
     },
     apis: ['./app.ts'], // files containing annotations as above
 };
 
 const openapiSpecification = swaggerJsdoc(options);
+
+const generateRandomId = (length = 10) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
 /**
@@ -69,6 +86,8 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
  *                     type: string
  *                   price:
  *                     type: number
+ *                   image:
+ *                      type: string
  */
 app.get('/locations', (req: Request, res: Response) => {
     res.json(locations);
@@ -102,6 +121,8 @@ app.get('/locations', (req: Request, res: Response) => {
  *                   type: string
  *                 price:
  *                   type: number
+ *                 image:
+ *                    type: string
  *       404:
  *         description: The location was not found
  */
@@ -117,9 +138,9 @@ app.get('/locations/:id', (req: Request, res: Response) => {
 
 /**
  * @openapi
- * /appointments:
+ * /bookings:
  *   post:
- *     summary: Create a new appointment
+ *     summary: Create a new booking
  *     requestBody:
  *       required: true
  *       content:
@@ -127,58 +148,53 @@ app.get('/locations/:id', (req: Request, res: Response) => {
  *           schema:
  *             type: object
  *             properties:
- *               id:
- *                 type: string
  *               location:
  *                 type: string
- *               beginningDate:
+ *               startDate:
  *                 type: string
  *                 format: date-time
- *               endingDate:
+ *               endDate:
  *                 type: string
  *                 format: date-time
  *               price:
  *                 type: number
- *               address:
- *                 type: string
  *     responses:
  *       201:
- *         description: The appointment was created successfully
+ *         description: The booking was created successfully
  *       400:
- *         description: There is an overlap with an existing appointment
+ *         description: There is an overlap with an existing booking
  */
-app.post('/appointments', (req: Request, res: Response) => {
-    const { id, location, beginningDate, endingDate, price, address } = req.body;
-    // Check for overlapping appointments
-    for (let appointment of appointments) {
-        if (appointment.id === id && 
-            ((appointment.beginningDate <= beginningDate && appointment.endingDate >= beginningDate) ||
-            (appointment.beginningDate <= endingDate && appointment.endingDate >= endingDate))) {
-            return res.status(400).json({ message: "Cannot create appointment. There is an overlap with an existing appointment." });
+app.post('/bookings', (req: Request, res: Response) => {
+    const { locationId, startDate, endDate, price } = req.body;
+    // Check for overlapping bookings
+    for (let booking of bookings) {
+        if (((booking.startDate <= startDate && booking.endDate >= startDate) ||
+            (booking.startDate <= endDate && booking.endDate >= endDate)) && (booking.locationId == locationId)) {
+            return res.status(400).json({ message: "Cannot create booking. There is an overlap with an existing booking." });
         }
     }
 
-    // Create new appointment
-    appointments.push({ id, location, beginningDate, endingDate, price, address });
-    fs.writeFileSync(path.join(__dirname, 'appointments.json'), JSON.stringify(appointments));
-    res.status(201).json({ message: "Appointment created successfully." });
+    // Create new booking
+    bookings.push({ id: generateRandomId(), locationId, startDate, endDate, price });
+    fs.writeFileSync(path.join(__dirname, 'bookings.json'), JSON.stringify(bookings));
+    res.status(201).json({ message: "Booking created successfully." });
 });
 
 /**
  * @openapi
- * /appointments/{id}:
+ * /bookings/{id}:
  *   get:
- *     summary: Retrieve an appointment
+ *     summary: Retrieve an booking
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The appointment ID
+ *         description: The booking ID
  *     responses:
  *       200:
- *         description: The appointment was retrieved successfully
+ *         description: The booking was retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -188,10 +204,10 @@ app.post('/appointments', (req: Request, res: Response) => {
  *                   type: string
  *                 location:
  *                   type: string
- *                 beginningDate:
+ *                 startDate:
  *                   type: string
  *                   format: date-time
- *                 endingDate:
+ *                 endDate:
  *                   type: string
  *                   format: date-time
  *                 price:
@@ -199,29 +215,29 @@ app.post('/appointments', (req: Request, res: Response) => {
  *                 address:
  *                   type: string
  *       404:
- *         description: The appointment was not found
+ *         description: The booking was not found
  */
-app.get('/appointments/:id', (req: Request, res: Response) => {
-    const appointment = appointments.find(a => a.id === req.params.id);
-    if (appointment) {
-        res.json(appointment);
+app.get('/bookings/:id', (req: Request, res: Response) => {
+    const booking = bookings.find(a => a.id === req.params.id);
+    if (booking) {
+        res.json(booking);
     } else {
-        res.status(404).json({ message: "Appointment not found." });
+        res.status(404).json({ message: "Booking not found." });
     }
 });
 
 /**
  * @openapi
- * /appointments/{id}:
+ * /bookings/{id}:
  *   put:
- *     summary: Update an appointment
+ *     summary: Update an booking
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The appointment ID
+ *         description: The booking ID
  *     requestBody:
  *       required: true
  *       content:
@@ -229,14 +245,12 @@ app.get('/appointments/:id', (req: Request, res: Response) => {
  *           schema:
  *             type: object
  *             properties:
- *               id:
- *                 type: string
  *               location:
  *                 type: string
- *               beginningDate:
+ *               startDate:
  *                 type: string
  *                 format: date-time
- *               endingDate:
+ *               endDate:
  *                 type: string
  *                 format: date-time
  *               price:
@@ -245,7 +259,7 @@ app.get('/appointments/:id', (req: Request, res: Response) => {
  *                 type: string
  *     responses:
  *       200:
- *         description: The appointment was updated successfully
+ *         description: The booking was updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -255,65 +269,63 @@ app.get('/appointments/:id', (req: Request, res: Response) => {
  *                   type: string
  *                 location:
  *                   type: string
- *                 beginningDate:
+ *                 startDate:
  *                   type: string
  *                   format: date-time
- *                 endingDate:
+ *                 endDate:
  *                   type: string
  *                   format: date-time
  *                 price:
  *                   type: number
- *                 address:
- *                   type: string
  *       404:
- *         description: The appointment was not found
+ *         description: The booking was not found
  */
-app.put('/appointments/:id', (req: Request, res: Response) => {
-    const { id, location, beginningDate, endingDate, price, address } = req.body;
-    let index = appointments.findIndex(a => a.id === req.params.id);
+app.put('/bookings/:id', (req: Request, res: Response) => {
+    const { id, locationId, startDate, endDate, price, address } = req.body;
+    let index = bookings.findIndex(a => a.id === req.params.id);
     if (index !== -1) {
-        appointments[index] = { id, location, beginningDate, endingDate, price, address };
-        fs.writeFileSync(path.join(__dirname, 'appointments.json'), JSON.stringify(appointments));
-        res.json({ message: "Appointment updated successfully." });
+        bookings[index] = { id, locationId, startDate, endDate, price };
+        fs.writeFileSync(path.join(__dirname, 'bookings.json'), JSON.stringify(bookings));
+        res.json({ message: "Booking updated successfully." });
     } else {
-        res.status(404).json({ message: "Appointment not found." });
+        res.status(404).json({ message: "Booking not found." });
     }
 });
 
 /**
  * @openapi
- * /appointments/{id}:
+ * /bookings/{id}:
  *   delete:
- *     summary: Delete an appointment
+ *     summary: Delete an booking
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The appointment ID
+ *         description: The booking ID
  *     responses:
  *       200:
- *         description: The appointment was deleted successfully
+ *         description: The booking was deleted successfully
  *       404:
- *         description: The appointment was not found
+ *         description: The booking was not found
  */
-app.delete('/appointments/:id', (req: Request, res: Response) => {
-    let index = appointments.findIndex(a => a.id === req.params.id);
+app.delete('/bookings/:id', (req: Request, res: Response) => {
+    let index = bookings.findIndex(a => a.id === req.params.id);
     if (index !== -1) {
-        appointments.splice(index, 1);
-        fs.writeFileSync(path.join(__dirname, 'appointments.json'), JSON.stringify(appointments));
-        res.json({ message: "Appointment deleted successfully." });
+        bookings.splice(index, 1);
+        fs.writeFileSync(path.join(__dirname, 'bookings.json'), JSON.stringify(bookings));
+        res.json({ message: "Booking deleted successfully." });
     } else {
-        res.status(404).json({ message: "Appointment not found." });
+        res.status(404).json({ message: "Booking not found." });
     }
 });
 
 /**
  * @openapi
- * /appointments/location/{locationId}:
+ * /bookings/location/{locationId}:
  *   get:
- *     summary: Retrieve all appointments for a given location ID
+ *     summary: Retrieve all bookings for a given location ID
  *     parameters:
  *       - in: path
  *         name: locationId
@@ -323,7 +335,7 @@ app.delete('/appointments/:id', (req: Request, res: Response) => {
  *         description: The location ID
  *     responses:
  *       200:
- *         description: A list of appointments for the given location ID
+ *         description: A list of bookings for the given location ID
  *         content:
  *           application/json:
  *             schema:
@@ -335,26 +347,24 @@ app.delete('/appointments/:id', (req: Request, res: Response) => {
  *                     type: string
  *                   location:
  *                     type: string
- *                   beginningDate:
+ *                   startDate:
  *                     type: string
  *                     format: date-time
- *                   endingDate:
+ *                   endDate:
  *                     type: string
  *                     format: date-time
  *                   price:
  *                     type: number
- *                   address:
- *                     type: string
  *       404:
- *         description: No appointments found for the given location ID
+ *         description: No bookings found for the given location ID
  */
-app.get('/appointments/location/:locationId', (req: Request, res: Response) => {
+app.get('/bookings/location/:locationId', (req: Request, res: Response) => {
     const locationId = req.params.locationId;
-    const appointmentsForLocation = appointments.filter(a => a.location === locationId);
-    if (appointmentsForLocation.length > 0) {
-        res.json(appointmentsForLocation);
+    const bookingsForLocation = bookings.filter(a => a.locationId === locationId);
+    if (bookingsForLocation.length > 0) {
+        res.json(bookingsForLocation);
     } else {
-        res.status(404).json({ message: "No appointments found for the given location ID." });
+        res.status(404).json({ message: "No bookings found for the given location ID." });
     }
 });
 

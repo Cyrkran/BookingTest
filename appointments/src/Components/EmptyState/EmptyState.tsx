@@ -1,13 +1,13 @@
-import { Paper, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
+import EmptyState1 from './../../assets/EmptyState.png'
 import './EmptyState.css'
 
 const EmptyState = () => {
     return (
-        <div className="emptyStateWrapper">
-            <Paper elevation={2} sx={{padding: '10px'}}>
-                <Typography variant="h4">Please, pick a location and make your first booking</Typography>
-            </Paper>
-        </div>
+        <Box className="emptyStateWrapper">
+            <img src={EmptyState1} width={'30%'} height={'30%'} />
+            <Typography variant="h4">Please, pick a location and make your first booking</Typography>
+        </Box>
     )
 }
 

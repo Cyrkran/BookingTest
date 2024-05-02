@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
 
 interface CardLocationProps {
     onClick: React.Dispatch<React.SetStateAction<BookingLocation | null>>
@@ -11,10 +10,7 @@ interface CardLocationProps {
 
 const CardLocation = (props: CardLocationProps & BookingLocation) => {
     const { id, location, price, type, image, onClick } = props
-    const navigate = useNavigate()
-    const goToBooking = (locationId: string) => {
-        navigate(`/booking/${locationId}`)
-    }
+
 
     return (
         <>

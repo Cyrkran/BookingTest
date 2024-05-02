@@ -1,18 +1,22 @@
-import './App.css'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from './pages/Home'
-import Booking from './pages/Booking';
+import './App.css';
+import { BookingContext } from './Components/Context/BookingContext';
+import Home from './pages/Home';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-function App() {
+
+const App = () => {
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  });
+
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/booking/:locationId" element={<Booking />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <ThemeProvider theme={darkTheme}>
+      <BookingContext>
+        <Home />
+      </BookingContext>
+    </ThemeProvider>
   )
 }
 

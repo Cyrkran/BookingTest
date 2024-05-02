@@ -1,9 +1,13 @@
 .HomeWrapper {
     display: flex;
     flex-wrap: wrap;
-    width: '100%';
+    width: 100%;
     margin: 0px auto;
     justify-content: space-between;
+}
+
+.listings {
+    max-width: 378px;
 }
 
 .bookingDetails {
@@ -11,6 +15,25 @@
     width: 100%;
 }
 
-.listings {
-    max-width: 378px;
+@media (max-width: 1439px) {
+    .HomeWrapper {
+        display: grid;
+        grid-template-columns: 1fr ;
+        grid-template-rows: 1fr;
+        gap: 10px;
+    }
+
+    .listings {
+        width: 100%;
+        overflow-x: auto;
+        height: fit-content;
+        max-width: 100%;
+        grid-row: 1;
+    }
+
+    .bookingDetails {
+        height: 100%;
+        width: 100%;
+        max-width: 100%;
+    }
 }

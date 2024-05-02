@@ -1,4 +1,4 @@
-.listings {
+.all_listings {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -6,4 +6,15 @@
     gap: 5px;
     overflow-y: auto;
     height: 100vh;
+}
+
+@media (max-width: 1439px) {
+    .all_listings{
+        display: flex;
+        overflow-y: hidden;
+        overflow-x: auto;
+        height: fit-content;
+        flex-wrap: nowrap;
+        width: '-webkit-fill-availble';
+    }
 }

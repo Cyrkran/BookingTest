@@ -1,5 +1,5 @@
-import useFetch from "../../Hooks/useFetch"
 import CardLocation from "../Card/CardLocation"
+import AllLocations from './../../assets/Locations.json'
 import './Listings.css'
 
 interface ListingProps {
@@ -8,16 +8,13 @@ interface ListingProps {
 
 const Listings = (props: ListingProps) => {
     const { onChangeSelectedLocation } = props
-    const { data: locations, error, loading } = useFetch<Array<BookingLocation>>('/locations', {})
 
     return (
-        <div className="listings">
-            { loading && <></> }
-            { error && <></> }
-            { locations && (
+        <div className="all_listings">
+            { AllLocations && (
                 <>
                     {
-                        locations.map((location: BookingLocation) => {
+                        AllLocations.map((location: BookingLocation) => {
                             return (
                                 <CardLocation 
                                     onClick={onChangeSelectedLocation}

@@ -2,8 +2,8 @@ import { useState } from "react";
 import EmptyState from "../Components/EmptyState/EmptyState";
 import Layout from "../Components/Layout/Layout";
 import Listings from "../Components/Listings/Listings";
-import './Home.css';
 import Booking from "./Booking";
+import './Home.css';
 
 const Home = () => {
     const [location, setLocation] = useState<BookingLocation | null>(null)
