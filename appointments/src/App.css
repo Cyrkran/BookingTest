@@ -1,8 +1,0 @@
-.locations {
-    width: 100%;
-    min-width: 345px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-}
